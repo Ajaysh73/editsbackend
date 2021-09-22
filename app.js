@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 app.use('/brfss', brfssRoutes); // => /brss
 app.use('/asthma', asthmaRoutes); // => /asthma
 app.use('/general', generalRoutes); // => /general
-app.get('/', (req, res) => {
+app.use('/', (req, res) => {
 	return res.send('Hello from BRFSS API.');
 });
 

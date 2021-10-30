@@ -1,14 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const mongoose = require('mongoose');
-const HttpError = require('./models/https-error');
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
+import mongoose from 'mongoose';
+import HttpError from './models/https-error.js';
 
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 
-const brfssRoutes = require('./routes/brfss-routes');
-const asthmaRoutes = require('./routes/asthma-routes');
-const generalRoutes = require('./routes/general-routes');
+import brfssRoutes from './routes/brfss-routes.js';
+import asthmaRoutes from './routes/asthma-routes.js';
+import generalRoutes from './routes/general-routes.js';
+import userRoutes from './routes/users.js';
+import resultsRoutes from './routes/results.js';
 
 const app = express();
 dotenv.config();
@@ -24,6 +26,9 @@ app.use((req, res, next) => {
 app.use('/brfss', brfssRoutes); // => /brss
 app.use('/asthma', asthmaRoutes); // => /asthma
 app.use('/general', generalRoutes); // => /general
+app.use('/user', userRoutes); // => user login
+app.use('/result', resultsRoutes); // => save results
+
 app.use('/', (req, res) => {
 	return res.send('Hello from BRFSS API.');
 });
@@ -40,6 +45,7 @@ mongoose
 	.connect(process.env.CONNECTION_URL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
+		useFindAndModify: false,
 	})
 	.then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
 	.catch((error) => console.log(error.message));

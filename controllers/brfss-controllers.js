@@ -1,13 +1,22 @@
-const HttpError = require('../models/https-error');
-
-const path = require('path');
+// const HttpError = require('../models/https-error.js');
+import HttpError from '../models/https-error.js';
+import * as module from '../models/layout.js';
+// const path = require('path');
+import path from 'path';
 function CreateModel(year) {
+	console.log(year);
 	//function to create collection , user_name  argument contains collection name
-	let Model;
-	return (Model = require(path.resolve('./models/layout'))(year));
+	// let Model;
+	// return (Model = require(path.resolve('./models/layout'))(year));
+	// return (Model = import(path.resolve('./models/layout')(year)));
+
+	// const {dynamicModel} = import('./models/layout');
+	const Model = module.dynamicModel(year);
+	return Model;
+	// return (Model = require(path.resolve('./models/layout'))(year));
 }
 
-function save_Layout_info(user_name, data) {
+export const save_Layout_info = (user_name, data) => {
 	//function to save Layout info , data argument contains layout info
 	var UserModel = mongoose.model(user_name);
 	var usermodel = UserModel(data);
@@ -18,20 +27,18 @@ function save_Layout_info(user_name, data) {
 			console.log('\nSaved');
 		}
 	});
-}
+};
 
-const getLayoutByYear = async (req, res, next) => {
+export const getLayoutByYear = async (req, res, next) => {
 	const year = req.params.year;
 
-	Model = CreateModel(year);
+	const Model = CreateModel(year);
 	console.log(year);
 	let layout;
 	try {
 		layout = await Model.find({}, null, { sort: { field_name: 1 } });
 	} catch (error) {
-		return next(
-			new HttpError('Failed to find layout by year. Please try again', 500)
-		);
+		return next(new HttpError('Failed to find layout by year. Please try again', 500));
 	}
 
 	if (!layout) {
@@ -40,4 +47,4 @@ const getLayoutByYear = async (req, res, next) => {
 	res.json({ layout: layout });
 };
 
-module.exports.getLayoutByYear = getLayoutByYear;
+// module.exports.getLayoutByYear = getLayoutByYear;
